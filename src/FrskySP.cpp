@@ -84,13 +84,6 @@
  * \copyright 2014 - Jean-Christophe Heger - Released under the LGPL 3.0 license.
  * \ChangeLog 2014-06-27 - public devel release
  * \todo write an example to simulate an X8R receiver
- * 
- * \bug There is an unsolved bug with one value only, until now. While trying to send airspeed value 100 mph, converted
- * to knots, the receiver will not detect the sensor and not send the value to the remote neither. It works perfectly
- * with 101 or 99 mph, but 100 mph will hang.
- * ~~~
- * FrskySP.sendData (FRSKY_SP_AIR_SPEED, 100 * 10 / 1.15077945);    // packet: 0x10 00 0A 64 03 00 00 7E
- * ~~~
  */
  
 #include "Arduino.h"
