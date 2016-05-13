@@ -279,7 +279,12 @@ void FrskySP::sendData (uint8_t type, uint16_t id, int32_t val) {
     int i = 0;
     union packet packet;
 
-	// TODO fix forbidden value 0x7E
+	/*
+	 * TODO fix forbidden value 0x7E
+	 * 0x7D -> 0x7D 0x7D
+	 * 0x7E -> 0x7D 0x20
+	 */
+	
 	/*
 	 * All devices are connected on the same bus. They all can read the data over the bus.
 	 * 0x7E is a code (just a convention taken by Frsky) that identify the "start" of a
@@ -304,7 +309,17 @@ void FrskySP::sendData (uint8_t type, uint16_t id, int32_t val) {
     packet.byte[7] = this->CRC (packet.byte);
 
 	this->_ledToggle (HIGH);
-    for (i=0; i<8; i++) this->mySerial->write (packet.byte[i]);
+    for (i=0; i<8; i++) {
+		if (packet.byte[i] == 0x7D) {
+			mySerial->write (0x7D);
+			mySerial->write (0x7D);
+		} else if (packet.byte[i] == 0x7E) {
+			mySerial->write (0x7D);
+			mySerial->write (0x20);
+		} else {
+			mySerial->write (packet.byte[i]);
+		}
+	}
 	this->_ledToggle (LOW);
 }
 
