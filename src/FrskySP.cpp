@@ -82,7 +82,7 @@
  * \see http://www.frsky-rc.com/
  * \see http://www.open-tx.org/
  * \copyright 2014 - Jean-Christophe Heger - Released under the LGPL 3.0 license.
- * \ChangeLog 2014-06-27 - public devel release
+ * \ChangeLog 2016-05-13 - moved to Arduino 1.5 format, fixing 0x7E sending issue (not tested yet)
  * \todo write an example to simulate an X8R receiver
  */
  
@@ -276,6 +276,7 @@ void FrskySP::sendData (uint8_t type, uint16_t id, int32_t val) {
 	 * TODO fix forbidden value 0x7E
 	 * 0x7D -> 0x7D 0x7D
 	 * 0x7E -> 0x7D 0x20
+	 * Not tested yet
 	 */
 	
 	/*
