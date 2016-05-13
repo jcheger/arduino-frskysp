@@ -279,6 +279,27 @@ void FrskySP::sendData (uint8_t type, uint16_t id, int32_t val) {
     int i = 0;
     union packet packet;
 
+	// TODO fix forbidden value 0x7E
+	/*
+	 * All devices are connected on the same bus. They all can read the data over the bus.
+	 * 0x7E is a code (just a convention taken by Frsky) that identify the "start" of a
+	 * polling frame send by the "master" (e.g. the Rx)
+	 * When this byte is read by a device, the device knows that it has to read the next
+	 * 2 bytes that will identify the target device ID.
+	 * If the device has the same device ID, then he can send 4 bytes of data (the 4 bytes
+	 * of data have to part of a frame of 8 bytes including one byte 0x10, 2 byte for the
+	 * device ID, the 4 bytes of data and a check byte).
+	 * Please note that none of the 8 bytes in the frame may be 0x7E (otherwise, other
+	 * listening devices could think there is a polling request.
+	 * If the device has really to send the value 0x7E, it has to replace it by 2 bytes :
+	 * the first one will be 0x7D and the second will be 0x7D OR 0x20 (if I remenber well)
+	 * this implies too that if the device has to send 0x7D, the device has to send 2
+	 * bytes too (0x7D + (0x7D OR 0x20). This allows the receiver to convert back the 2
+	 * bytes into one.
+	 * Please note that in those cases, the frame will contains more than 8 bytes (in
+	 * theory it could be 16 bytes).
+	 */
+ 
     packet.uint64  = (uint64_t) type | (uint64_t) id << 8 | (int64_t) val << 24;
     packet.byte[7] = this->CRC (packet.byte);
 
