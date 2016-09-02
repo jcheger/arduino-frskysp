@@ -14,7 +14,7 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_ALT ~ FRSKY_SP_ALT+15 (0x0100 ~ 0x010f)
- * physical ID(s) | 0 - Altimeter high precision / 3 - Altimeter normal precision
+ * physical ID(s) | 1 - Altimeter high precision / 3 - Altimeter normal precision
  * value          | (int) float * 100 [m]
  * 
  * N.B. OpenTX use the first non-zero value and set it as offset reference.
@@ -28,7 +28,7 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_VARIO ~ FRSKY_SP_VARIO+15 (0x0110 ~ 0x011f)
- * physical ID(s) | 0 - Altimeter high precision
+ * physical ID(s) | 1 - Altimeter high precision
  * value          | ?
  * 
  * \todo what difference with ALT ?
@@ -39,7 +39,7 @@
  * info  | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_CURR ~ FRSKY_SP_CURR+15 (0x0200 ~ 0x020f)
- * physical ID(s) | 2 - FSC current sensor
+ * physical ID(s) | 3 - FAS current sensor
  * value          | (int) float * 10 [A]
  * 
  * \brief VFAS/FSC current
@@ -50,7 +50,7 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_VFAS ~ FRSKY_SP_VFAS+15 (0x0210 ~ 0x021f)
- * physical ID(s) | 2 - FSC current sensor
+ * physical ID(s) | 3 - FAS current sensor
  * value          | (int) float * 100 [V]
  * 
  * \brief VFAS/FSC voltage
@@ -61,7 +61,7 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_CELLS ~ FRSKY_SP_CELLS+15 (0x0300 ~ 0x030f)
- * physical ID(s) | ?
+ * physical ID(s) | 2 - FLVSS
  * value          | see FrskySP::lipoCell(uint8_t id, float val1, float val2) for data format
  * 
  * \brief FLVSS Lipo cell voltage
@@ -72,7 +72,7 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_T1 ~ FRSKY_SP_T1+15 (0x0400 ~ 0x040f)
- * physical ID(s) | 1 - FLVSS Lipo sensor
+ * physical ID(s) | ?
  * value          | int [°C]
  * 
  * \brief Temperature
@@ -94,7 +94,7 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_RPM ~ FRSKY_SP_RPM+15 (0x0500 ~ 0x050f)
- * physical ID(s) | 4
+ * physical ID(s) | 5
  * value          | int [rpm]
  * 
  * \brief RPM
@@ -149,7 +149,7 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_GPS_LONG_LATI ~ FRSKY_SP_GPS_LONG_LATI+15 (0x0800 ~ 0x080f)
- * physical ID(s) | 3 - GPS
+ * physical ID(s) | 4 - GPS
  * value          | ?
  * 
  * \todo
@@ -160,7 +160,7 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_GPS_ALT ~ FRSKY_SP_GPS_ALT+15 (0x0820 ~ 0x082f)
- * physical ID(s) | 3 - GPS
+ * physical ID(s) | 4 - GPS
  * value          | (int) float * 100 [m]
  * 
  * N.B. OpenTX:
@@ -175,7 +175,7 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_GPS_SPEED ~ FRSKY_SP_GPS_SPEED+15 (0x0830 ~ 0x083f)
- * physical ID(s) | 3 - GPS
+ * physical ID(s) | 4 - GPS
  * value          | (int) float * 1000 [knots]
  * 
  * \brief GPS speed
@@ -189,7 +189,7 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_GPS_COURSE ~ FRSKY_SP_GPS_COURSE+15 (0x0840 ~ 0x084f)
- * physical ID(s) | 3 - GPS
+ * physical ID(s) | 4 - GPS
  * value          | (int) float * 100 [°]
  * limits         | 0~359.99°
  * 
@@ -201,7 +201,7 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_GPS_TIME_DATE ~ FRSKY_SP_GPS_TIME_DATE+15 (0x0850 ~ 0x085f)
- * physical ID(s) | 3 - GPS
+ * physical ID(s) | 4 - GPS
  * value          | ?
  * 
  * \brief GPS time and date
@@ -213,11 +213,10 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_A3 ~ FRSKY_SP_A3+15 (0x0900 ~ 0x090f)
- * physical ID(s) | 5- SP2UART(Host)
- * value          | ?
+ * physical ID(s) | ?- SP2UART(Host)
+ * value          | to be calibrated
  * 
  * \brief A3 ADC sensor
- * \todo scale and calibration
  */
 #define FRSKY_SP_A3             0x0900
 
@@ -225,11 +224,10 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_A4 ~ FRSKY_SP_A4+15 (0x0910 ~ 0x091f)
- * physical ID(s) | 5 - SP2UART(Host)
- * value          | ?
+ * physical ID(s) | ? - SP2UART(Host)
+ * value          | to be calibrated
  * 
  * \brief A4 ADC sensor
- * \todo scale and calibration
  */
 #define FRSKY_SP_A4             0x0910
 
@@ -237,7 +235,7 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_AIR_SPEED ~ FRSKY_SP_AIR_SPEED+15 (0x0a00 ~ 0x0a0f)
- * physical ID(s) | ?
+ * physical ID(s) | 10 - ASS
  * value          | knots * 10
  * 
  * \brief Air speed sensor
@@ -322,6 +320,7 @@ class FrskySP {
         uint32_t lipoCell (uint8_t id, float val);
         uint32_t lipoCell (uint8_t id, float val1, float val2);
         byte     read ();
+        void     sendByte (uint8_t c, uint16_t *crcp);
         void     sendData (uint16_t id, int32_t val);
         void     sendData (uint8_t type, uint16_t id, int32_t val);
         byte     write (byte val);

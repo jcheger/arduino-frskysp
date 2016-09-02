@@ -241,6 +241,32 @@ byte FrskySP::read () {
 }
 
 /**
+ * Based on the CleanFlight's code
+ * 
+ * \brief Send byte and calculate CRC
+ * \param c byte value
+ * \param *crcp crc pointer
+ * \see https://github.com/cleanflight/cleanflight/blob/master/src/main/telemetry/smartport.c
+ */
+void FrskySP::sendByte (uint8_t c, uint16_t *crcp) {
+    // smart port escape sequence
+    if (c == 0x7D || c == 0x7E) {
+        mySerial->write (0x7D);
+        c ^= 0x20;
+    }
+
+    this->write (c);
+
+    if (crcp == NULL) return;
+
+    uint16_t crc = *crcp;
+    crc += c;
+    crc += crc >> 8;
+    crc &= 0x00FF;
+    *crcp = crc;
+}
+
+/**
  * Sensors logical IDs and value formats are documented in FrskySP.h.
  * 
  * \brief Simplified version of sendData(), while the type is only 0x10 at now.
@@ -253,6 +279,7 @@ void FrskySP::sendData (uint16_t id, int32_t val) {
 
 /**
  * Sensors logical IDs and value formats are documented in FrskySP.h.
+ * Based on the CleanFlight's code
  * 
  * Packet format:
  * content   | length | remark
@@ -267,54 +294,30 @@ void FrskySP::sendData (uint16_t id, int32_t val) {
  * \param id sensor ID
  * \param val value
  * \return return the CRC for control
+ * \see https://github.com/cleanflight/cleanflight/blob/master/src/main/telemetry/smartport.c
  */
 void FrskySP::sendData (uint8_t type, uint16_t id, int32_t val) {
     int i = 0;
-    union packet packet;
+	uint16_t crc = 0;
+	uint8_t *u8p;
 
-	/*
-	 * TODO fix forbidden value 0x7E
-	 * 0x7D -> 0x7D 0x7D
-	 * 0x7E -> 0x7D 0x20
-	 * Not tested yet
-	 */
+	// type
+	FrskySP::sendByte (type, &crc);
 	
-	/*
-	 * All devices are connected on the same bus. They all can read the data over the bus.
-	 * 0x7E is a code (just a convention taken by Frsky) that identify the "start" of a
-	 * polling frame send by the "master" (e.g. the Rx)
-	 * When this byte is read by a device, the device knows that it has to read the next
-	 * 2 bytes that will identify the target device ID.
-	 * If the device has the same device ID, then he can send 4 bytes of data (the 4 bytes
-	 * of data have to part of a frame of 8 bytes including one byte 0x10, 2 byte for the
-	 * device ID, the 4 bytes of data and a check byte).
-	 * Please note that none of the 8 bytes in the frame may be 0x7E (otherwise, other
-	 * listening devices could think there is a polling request.
-	 * If the device has really to send the value 0x7E, it has to replace it by 2 bytes :
-	 * the first one will be 0x7D and the second will be 0x7D OR 0x20 (if I remenber well)
-	 * this implies too that if the device has to send 0x7D, the device has to send 2
-	 * bytes too (0x7D + (0x7D OR 0x20). This allows the receiver to convert back the 2
-	 * bytes into one.
-	 * Please note that in those cases, the frame will contains more than 8 bytes (in
-	 * theory it could be 16 bytes).
-	 */
- 
-    packet.uint64  = (uint64_t) type | (uint64_t) id << 8 | (int64_t) val << 24;
-    packet.byte[7] = this->CRC (packet.byte);
-
-	this->_ledToggle (HIGH);
-    for (i=0; i<8; i++) {
-		if (packet.byte[i] == 0x7D) {
-			mySerial->write (0x7D);
-			mySerial->write (0x7D);
-		} else if (packet.byte[i] == 0x7E) {
-			mySerial->write (0x7D);
-			mySerial->write (0x20);
-		} else {
-			mySerial->write (packet.byte[i]);
-		}
-	}
-	this->_ledToggle (LOW);
+	// id
+	u8p = (uint8_t*)&id;
+	FrskySP::sendByte (u8p[0], &crc);
+	FrskySP::sendByte (u8p[1], &crc);
+	
+	// val
+	u8p = (uint8_t*)&val;
+	FrskySP::sendByte (u8p[0], &crc);
+	FrskySP::sendByte (u8p[1], &crc);
+	FrskySP::sendByte (u8p[2], &crc);
+	FrskySP::sendByte (u8p[3], &crc);
+	
+	// crc
+	FrskySP::sendByte (0xFF - (uint8_t)crc, NULL);
 }
 
 /**
