@@ -9,13 +9,12 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_ALT ~ FRSKY_SP_ALT+15 (0x0100 ~ 0x010f)
- * physical ID(s) | 1 - Altimeter high precision / 3 - Altimeter normal precision
+ * physical ID(s) | 1 - Vari-H altimeter high precision / 4 - Vari-N altimeter normal precision
  * value          | (int) float * 100 [m]
  * 
  * N.B. OpenTX use the first non-zero value and set it as offset reference.
  * 
  * \brief altitude (barometric)
- * \warning normal precision altimeter conflicts with GPS physical ID 3
  */
 #define FRSKY_SP_ALT            0x0100
 
@@ -23,11 +22,10 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_VARIO ~ FRSKY_SP_VARIO+15 (0x0110 ~ 0x011f)
- * physical ID(s) | 1 - Altimeter high precision / 3 - Altimeter normal precision
- * value          | ? (int) float * 100 [mps]
+ * physical ID(s) | 1 - Vari-H altimeter high precision / 4 - Vari-N altimeter normal precision
+ * value          | ? (int) float * 100 [meters per second]
  * 
  * \brief vertical speed (barometric)
- * \warning normal precision altimeter conflicts with GPS physical ID 3
  */
 #define FRSKY_SP_VARIO          0x0110
 

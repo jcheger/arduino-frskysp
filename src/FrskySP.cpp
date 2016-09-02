@@ -19,7 +19,7 @@
  * Every sensor board muste haves a physical ID, that can be changed by the way. Here is a list of the default IDs.
  * 
  * ID | with CRC | sensor
- * ---+----------+-------
+ * ---|----------|-------
  * 1  | 0x00     | Vari-H (altimeter high precision)
  * 2  | 0xA1     | FLVSS / MLVSS (LiPo)
  * 3  | 0x22     | FAS (current)
@@ -27,31 +27,31 @@
  * 5  | 0xE4     | RPM
  * 6  | 0x45     | SP2UH
  * 7  | 0xC6     | SP2UR
- * 8  | 0x67     | 
- * 9  | 0x48     | 
+ * 8  | 0x67     | -
+ * 9  | 0x48     | -
  * 10 | 0xE9     | ASS (air speed)
- * 11 | 0x6A     | 
- * 12 | 0xCB     | 
- * 13 | 0xAC     | 
- * 14 | 0x0D     | 
- * 15 | 0x8E     | 
- * 16 | 0x2F     | 
- * 17 | 0xD0     | 
- * 18 | 0x71     | 
- * 19 | 0xF2     | 
- * 20 | 0x53     | 
- * 21 | 0x34     | 
- * 22 | 0x95     | 
- * 23 | 0x16     | 
- * 24 | 0xB7     | 
- * 25 | 0x98     | Receiver internal telemetry
- * 26 | 0x39     | Redudancy Bus (aka PowerBox)
- * 27 | 0xBA     | 
- * 28 | 0x1B     | 
+ * 11 | 0x6A     | -
+ * 12 | 0xCB     | -
+ * 13 | 0xAC     | -
+ * 14 | 0x0D     | -
+ * 15 | 0x8E     | -
+ * 16 | 0x2F     | -
+ * 17 | 0xD0     | -
+ * 18 | 0x71     | -
+ * 19 | 0xF2     | -
+ * 20 | 0x53     | -
+ * 21 | 0x34     | -
+ * 22 | 0x95     | -
+ * 23 | 0x16     | -
+ * 24 | 0xB7     | -
+ * 25 | 0x98     | RX / TX internal telemetry
+ * 26 | 0x39     | PowerBox (aka Redudancy Bus)
+ * 27 | 0xBA     | -
+ * 28 | 0x1B     | -
  * 
  * Receiver behavior
  * -----------------
- * The receiver polls in a cyle of (a bit more of) 11 ms.
+ * The receiver polls in a cyle of ~11 ms.
  * 
  * byte | description
  * -----|------------
