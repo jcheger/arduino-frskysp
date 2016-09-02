@@ -10,9 +10,44 @@
  * =============================
  * * use an inverted serial communication at 57600bds muxed on one port
  * * the receiver polls 28 physical sensors periodically
- * * compare to D, the SP protocol seems much faster, but maybe not - it's easier to use for data encoding, and is
+ * * compared to D, the SP protocol seems much faster, but maybe not - it's easier to use for data encoding, and is
  *   nicer to have a bus than a hub, but the polling of 28 IDs takes time (i.e. if a sensor has many values, it can
  *   send only one at a time, ex. GPS).
+ * 
+ * Default physical IDs
+ * --------------------
+ * Every sensor board muste haves a physical ID, that can be changed by the way. Here is a list of the default IDs.
+ * 
+ * ID | with CRC | sensor
+ * ---+----------+-------
+ * 1  | 0x00     | Vari-H (altimeter high precision)
+ * 2  | 0xA1     | FLVSS / MLVSS (LiPo)
+ * 3  | 0x22     | FAS (current)
+ * 4  | 0x83     | GPS / Vari-N (altimeter normal precision)
+ * 5  | 0xE4     | RPM
+ * 6  | 0x45     | SP2UH
+ * 7  | 0xC6     | SP2UR
+ * 8  | 0x67     | 
+ * 9  | 0x48     | 
+ * 10 | 0xE9     | ASS (air speed)
+ * 11 | 0x6A     | 
+ * 12 | 0xCB     | 
+ * 13 | 0xAC     | 
+ * 14 | 0x0D     | 
+ * 15 | 0x8E     | 
+ * 16 | 0x2F     | 
+ * 17 | 0xD0     | 
+ * 18 | 0x71     | 
+ * 19 | 0xF2     | 
+ * 20 | 0x53     | 
+ * 21 | 0x34     | 
+ * 22 | 0x95     | 
+ * 23 | 0x16     | 
+ * 24 | 0xB7     | 
+ * 25 | 0x98     | Receiver internal telemetry
+ * 26 | 0x39     | Redudancy Bus (aka PowerBox)
+ * 27 | 0xBA     | 
+ * 28 | 0x1B     | 
  * 
  * Receiver behavior
  * -----------------
@@ -38,8 +73,10 @@
  * --------|-----------
  * 1       | type (only 0x10 at now)
  * 2       | sensor logical ID (see \ref FrskySP.h for the full list of IDs)
- * 4       | value
+ * 4 (1)   | value
  * 1       | CRC
+ * 
+ * (1) length may be up to 8 bytes, while escaping 0x7D and 7x7E values
  * 
  * Slowness considerations
  * =======================
@@ -78,12 +115,10 @@
  *
  * \version devel
  * \author Jean-Christophe Heger
- * \see https://github.com/jcheger/frsky-arduino/ - source of this library
+ * \see https://github.com/jcheger/arduino-frskysp - source of this library
  * \see http://www.frsky-rc.com/
  * \see http://www.open-tx.org/
- * \copyright 2014 - Jean-Christophe Heger - Released under the LGPL 3.0 license.
- * \ChangeLog 2016-05-13 - moved to Arduino 1.5 format, fixing 0x7E sending issue (not tested yet)
- * \todo write an example to simulate an X8R receiver
+ * \copyright 2014-2016 - Jean-Christophe Heger - Released under the LGPL 3.0 license.
  */
  
 #include "Arduino.h"
@@ -197,8 +232,12 @@ bool FrskySP::CRCcheck (uint8_t *packet) {
 }
 
 /**
- * \brief Same as lipoCell(uint8_t id, float val1, float val2), but with only one cell.
- * \param id cell ID (0~11)
+ * FLVSS does not work the same way than the D8 series. Sending a battery ID over 5
+ * will overflow the next sensor on the Taranis. In order to have more than 6 cells,
+ * either use another logical ID (ex. FRSKY_SP_CELLS+1), or use another physical ID.
+ * 
+ * \brief Same as lipoCell (uint8_t id, float val1, float val2), but with only one cell.
+ * \param id cell ID (0~5)
  * \param val cell voltage
  * \return formated data for cell voltage (1 cell)
  */
@@ -221,7 +260,7 @@ uint32_t FrskySP::lipoCell (uint8_t id, float val) {
  * but 12 at a maximum.
  *
  * \brief Lipo voltage data format for 2 cells
- * \param id cell ID (0~11)
+ * \param id cell ID (0~5)
  * \param val1 cell voltage (for cell ID)
  * \param val2 cell voltage (for cell ID+1)
  * \return formated data for cell voltage (2 cells)
@@ -230,7 +269,7 @@ uint32_t FrskySP::lipoCell (uint8_t id, float val1, float val2) {
 	if (this->_cellMax < id + 2) this->_cellMax = id + 2;
     val1 *= 500;
     val2 *= 500;
-    return ((uint32_t) val2 & 0x0fff) << 20 | ((uint32_t) val1 & 0x0fff) << 8 | this->_cellMax << 4 | id;
+    return ((uint32_t) val2 & 0x0fff) << 20 | ((uint32_t) val1 & 0x0fff) << 8 | (this->_cellMax & 0x0f) << 4 | (id & 0x0f);
 }
 
 /**

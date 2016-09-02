@@ -6,11 +6,6 @@
 #include "SoftwareSerial.h"
 
 /**
- * unused
- */
-#define FRSKY_ALT_ZERO          0x0000
-
-/**
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_ALT ~ FRSKY_SP_ALT+15 (0x0100 ~ 0x010f)
@@ -29,7 +24,7 @@
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_VARIO ~ FRSKY_SP_VARIO+15 (0x0110 ~ 0x011f)
  * physical ID(s) | 1 - Altimeter high precision
- * value          | ?
+ * value          | ? (int) float * 100 [mps]
  * 
  * \todo what difference with ALT ?
  */
@@ -176,7 +171,7 @@
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_GPS_SPEED ~ FRSKY_SP_GPS_SPEED+15 (0x0830 ~ 0x083f)
  * physical ID(s) | 4 - GPS
- * value          | (int) float * 1000 [knots]
+ * value          | (int) float * 1000 [kts]
  * 
  * \brief GPS speed
  * \warning The speed shown on OpenTX has a little drift, because the knots to shown value conversion is simplified.
@@ -213,10 +208,8 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_A3 ~ FRSKY_SP_A3+15 (0x0900 ~ 0x090f)
- * physical ID(s) | ?- SP2UART(Host)
- * value          | to be calibrated
- * 
- * \brief A3 ADC sensor
+ * physical ID(s) | 6- SP2UART(Host)
+ * value          | (int) float * 100 [V]
  */
 #define FRSKY_SP_A3             0x0900
 
@@ -224,10 +217,8 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_A4 ~ FRSKY_SP_A4+15 (0x0910 ~ 0x091f)
- * physical ID(s) | ? - SP2UART(Host)
- * value          | to be calibrated
- * 
- * \brief A4 ADC sensor
+ * physical ID(s) | 6 - SP2UART(Host)
+ * value          | (int) float * 100 [V]
  */
 #define FRSKY_SP_A4             0x0910
 
@@ -236,74 +227,139 @@
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_AIR_SPEED ~ FRSKY_SP_AIR_SPEED+15 (0x0a00 ~ 0x0a0f)
  * physical ID(s) | 10 - ASS
- * value          | knots * 10
- * 
- * \brief Air speed sensor
- * \warning The speed shown on OpenTX has a little drift, because the knots to shown value conversion is simplified.
- * Allthough, raw knots will be recorded in the logs, and the conversion will be correctly in Companion.
- * This was discussed in this issue: https://github.com/opentx/opentx/issues/1422
+ * value          | (int) float * 10 [kts]
  */
 #define FRSKY_SP_AIR_SPEED      0x0a00
 
 /**
- * Not used - already handled by X8R receiver
+ * info | comment
+ * ---- | -------
+ * sensor ID(s)   | FRSKY_SP_POWERBOX_BATT1 ~ FRSKY_SP_POWERBOX_BATT1+15 (0xb00 ~ 0xb0f)
+ * physical ID(s) | 26 - Power Box
+ * value          | (int) float * 1000 [V]
+ */
+#define FRKSY_SP_POWERBOX_BATT1	0x0b00
+
+/**
+ * info | comment
+ * ---- | -------
+ * sensor ID(s)   | FRSKY_SP_POWERBOX_BATT2 ~ FRSKY_SP_POWERBOX_BATT2+15 (0xb10 ~ 0xb1f)
+ * physical ID(s) | 26 - Power Box
+ * value          | (int) float * 1000 [V]
+ */
+#define FRSKY_SP_POWERBOX_BATT2	0x0b10
+
+/**
+ * info | comment
+ * ---- | -------
+ * sensor ID(s)   | FRSKY_SP_POWERBOX_STATE ~ FRSKY_SP_POWERBOX_STATE+15 (0xb20 ~ 0xb2f)
+ * physical ID(s) | 26 - Power Box
+ * value          | raw
+ */
+#define FRSKY_SP_POWERBOX_STATE	0x0b20
+
+/**
+ * info | comment
+ * ---- | -------
+ * sensor ID(s)   | FRSKY_SP_POWERBOX_CNSP ~ FRSKY_SP_POWERBOX_CNSP+15 (0xb30 ~ 0xb3f)
+ * physical ID(s) | 26 - Power Box
+ * value          | (int) int [mAh]
+ */
+#define FRSKY_SP_POWERBOX_CNSP	0x0b30
+
+/**
+ * N/A - already handled by X8R receiver
  *
  * info | comment
  * ---- | -------
- * sensor ID(s)   | FRSKY_SP_RSSI_ID (0xf101)
- * physical ID(s) | ?
+ * sensor ID(s)   | FRSKY_SP_RSSI (0xf101)
+ * physical ID(s) | 25
+ * value          | dB
  * 
- * \brief RX RSSI (N/U)
+ * \brief RX RSSI (Received signal strength indication)
+ * \see https://en.wikipedia.org/wiki/Received_signal_strength_indication
  */
-#define FRSKY_SP_RSSI_ID        0xf101
+#define FRSKY_SP_RSSI	        0xf101
 
 /**
- * Not used - already handled by X8R receiver
+ * N/A - already handled by X8R receiver
  *
  * info | comment
  * ---- | -------
- * sensor ID(s)   | FRSKY_SP_ADC1_ID (0xf102)
- * physical ID(s) | ?
- *
- * \brief A1 ADC sensor (N/U)
+ * sensor ID(s)   | FRSKY_SP_ADC1 (0xf102), aka A1 / BTRX
+ * physical ID(s) | 25
+ * value          | volts
  */
-#define FRSKY_SP_ADC1_ID        0xf102
+#define FRSKY_SP_ADC1	        0xf102
+#define FRSKY_SP_A1		        0xf102
+#define FRSKY_SP_BTRX			0xf102
 
 /**
  * info | comment
  * ---- | -------
- * sensor ID(s)   | FRSKY_SP_ADC2_ID (0xf103)
+ * sensor ID(s)   | FRSKY_SP_ADC2 (0xf103), aka A2
  * physical ID(s) | ?
- * value          | ?
- * 
- * \brief A2 ADC sensor
- * \todo scale and calibration
+ * value          | volts
  */
-#define FRSKY_SP_ADC2_ID        0xf103
+#define FRSKY_SP_ADC2			0xf103
+#define FRSKY_SP_A2				0xf103
 
 /**
  * info | comment
  * ---- | -------
- * sensor ID(s)   | FRSKY_SP_BATT_ID (0xf104)
- * physical ID(s) | ?
+ * sensor ID(s)   | FRSKY_SP_SP2UART_A (0xfd00)
+ * physical ID(s) | 6
  * value          | ?
- * 
- * \brief unknown
- * \todo what is this sensor ?
  */
-#define FRSKY_SP_BATT_ID        0xf104
+#define FRSKY_SP_SP2UART_A		0xfd00
 
 /**
  * info | comment
  * ---- | -------
- * sensor ID(s)   | FRSKY_SP_SWR_ID (0xf105)
+ * sensor ID(s)   | FRSKY_SP_SP2UART_B (0xfd01)
+ * physical ID(s) | 6
+ * value          | ?
+ */
+#define FRSKY_SP_SP2UART_B		0xfd01
+
+/**
+ * info | comment
+ * ---- | -------
+ * sensor ID(s)   | FRSKY_SP_BATT (0xf104)
  * physical ID(s) | ?
  * value          | ?
- * 
- * \brief unknown
- * \todo what is this sensor ?
  */
-#define FRSKY_SP_SWR_ID         0xf105
+#define FRSKY_SP_BATT	        0xf104
+
+/**
+ * info | comment
+ * ---- | -------
+ * sensor ID(s)   | FRSKY_SP_SWR (0xf105)
+ * physical ID(s) | 25
+ * value          | raw
+ * 
+ * \brief Stading ware radio
+ * \see https://en.wikipedia.org/wiki/Standing_wave_ratio
+ */
+#define FRSKY_SP_SWR	         0xf105
+
+/**
+ * info | comment
+ * ---- | -------
+ * sensor ID(s)   | FRSKY_SP_ (0x)
+ * physical ID(s) | 
+ * value          | ?
+ */
+#define FRSKY_SP_XJT_VERSION	0xf106
+
+/**
+ * info | comment
+ * ---- | -------
+ * sensor ID(s)   | FRSKY_SP_FUEL_QTY ~ FRSKY_SP_FUEL_QTY+15 (0x0a10 ~ 0x0a1f)
+ * physical ID(s) | ?
+ * value          | (int) float * 100 [ml]
+ */
+#define FRSKY_SP_FUEL_QTY		0x0a10
 
 /**
  * Frsky Smart Port class
