@@ -14,7 +14,7 @@
  * 
  * N.B. OpenTX use the first non-zero value and set it as offset reference.
  * 
- * \brief altimeter (barometric altitude)
+ * \brief altitude (barometric)
  * \warning normal precision altimeter conflicts with GPS physical ID 3
  */
 #define FRSKY_SP_ALT            0x0100
@@ -23,10 +23,11 @@
  * info | comment
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_VARIO ~ FRSKY_SP_VARIO+15 (0x0110 ~ 0x011f)
- * physical ID(s) | 1 - Altimeter high precision
+ * physical ID(s) | 1 - Altimeter high precision / 3 - Altimeter normal precision
  * value          | ? (int) float * 100 [mps]
  * 
- * \todo what difference with ALT ?
+ * \brief vertical speed (barometric)
+ * \warning normal precision altimeter conflicts with GPS physical ID 3
  */
 #define FRSKY_SP_VARIO          0x0110
 
@@ -57,7 +58,7 @@
  * ---- | -------
  * sensor ID(s)   | FRSKY_SP_CELLS ~ FRSKY_SP_CELLS+15 (0x0300 ~ 0x030f)
  * physical ID(s) | 2 - FLVSS
- * value          | see FrskySP::lipoCell(uint8_t id, float val1, float val2) for data format
+ * value          | see FrskySP::lipoCell (uint8_t id, float val1, float val2) for data format
  * 
  * \brief FLVSS Lipo cell voltage
  */
@@ -70,7 +71,7 @@
  * physical ID(s) | ?
  * value          | int [°C]
  * 
- * \brief Temperature
+ * \brief temperature
  */
 #define FRSKY_SP_T1             0x0400
 
@@ -81,7 +82,7 @@
  * physical ID(s) | ?
  * value          | int [°C]
  * 
- * \brief Temperature
+ * \brief temperature
  */
 #define FRSKY_SP_T2             0x0410
 
@@ -103,7 +104,7 @@
  * physical ID(s) | ?
  * value          | int 0~100 [%]
  * 
- * \brief Fuel level
+ * \brief fuel level
  */
 #define FRSKY_SP_FUEL           0x0600
 
@@ -114,7 +115,7 @@
  * physical ID(s) | ?
  * value          | (int) float * 100 [g]
  * 
- * \brief Accelerometer (X)
+ * \brief accelerometer (X)
  */
 #define FRSKY_SP_ACCX           0x0700
 
@@ -210,6 +211,8 @@
  * sensor ID(s)   | FRSKY_SP_A3 ~ FRSKY_SP_A3+15 (0x0900 ~ 0x090f)
  * physical ID(s) | 6- SP2UART(Host)
  * value          | (int) float * 100 [V]
+ * 
+ * \brief analog voltage
  */
 #define FRSKY_SP_A3             0x0900
 
@@ -219,6 +222,8 @@
  * sensor ID(s)   | FRSKY_SP_A4 ~ FRSKY_SP_A4+15 (0x0910 ~ 0x091f)
  * physical ID(s) | 6 - SP2UART(Host)
  * value          | (int) float * 100 [V]
+ * 
+ * \brief analog voltage
  */
 #define FRSKY_SP_A4             0x0910
 
@@ -228,6 +233,8 @@
  * sensor ID(s)   | FRSKY_SP_AIR_SPEED ~ FRSKY_SP_AIR_SPEED+15 (0x0a00 ~ 0x0a0f)
  * physical ID(s) | 10 - ASS
  * value          | (int) float * 10 [kts]
+ * 
+ * \brief air speed
  */
 #define FRSKY_SP_AIR_SPEED      0x0a00
 
@@ -237,6 +244,8 @@
  * sensor ID(s)   | FRSKY_SP_POWERBOX_BATT1 ~ FRSKY_SP_POWERBOX_BATT1+15 (0xb00 ~ 0xb0f)
  * physical ID(s) | 26 - Power Box
  * value          | (int) float * 1000 [V]
+ * 
+ * \brief PowerBox battery voltage
  */
 #define FRKSY_SP_POWERBOX_BATT1	0x0b00
 
@@ -246,6 +255,8 @@
  * sensor ID(s)   | FRSKY_SP_POWERBOX_BATT2 ~ FRSKY_SP_POWERBOX_BATT2+15 (0xb10 ~ 0xb1f)
  * physical ID(s) | 26 - Power Box
  * value          | (int) float * 1000 [V]
+ * 
+ * \brief PowerBox battery voltage
  */
 #define FRSKY_SP_POWERBOX_BATT2	0x0b10
 
@@ -255,6 +266,8 @@
  * sensor ID(s)   | FRSKY_SP_POWERBOX_STATE ~ FRSKY_SP_POWERBOX_STATE+15 (0xb20 ~ 0xb2f)
  * physical ID(s) | 26 - Power Box
  * value          | raw
+ * 
+ * \brief PowerBox state
  */
 #define FRSKY_SP_POWERBOX_STATE	0x0b20
 
@@ -264,6 +277,8 @@
  * sensor ID(s)   | FRSKY_SP_POWERBOX_CNSP ~ FRSKY_SP_POWERBOX_CNSP+15 (0xb30 ~ 0xb3f)
  * physical ID(s) | 26 - Power Box
  * value          | (int) int [mAh]
+ * 
+ * \brief PowerBox consumption
  */
 #define FRSKY_SP_POWERBOX_CNSP	0x0b30
 
@@ -289,6 +304,8 @@
  * sensor ID(s)   | FRSKY_SP_ADC1 (0xf102), aka A1 / BTRX
  * physical ID(s) | 25
  * value          | volts
+ * 
+ * \brief RX voltage
  */
 #define FRSKY_SP_ADC1	        0xf102
 #define FRSKY_SP_A1		        0xf102
@@ -300,6 +317,8 @@
  * sensor ID(s)   | FRSKY_SP_ADC2 (0xf103), aka A2
  * physical ID(s) | ?
  * value          | volts
+ * 
+ * \brief analog voltage
  */
 #define FRSKY_SP_ADC2			0xf103
 #define FRSKY_SP_A2				0xf103
@@ -338,7 +357,7 @@
  * physical ID(s) | 25
  * value          | raw
  * 
- * \brief Stading ware radio
+ * \brief stading ware radio
  * \see https://en.wikipedia.org/wiki/Standing_wave_ratio
  */
 #define FRSKY_SP_SWR	         0xf105
@@ -358,6 +377,8 @@
  * sensor ID(s)   | FRSKY_SP_FUEL_QTY ~ FRSKY_SP_FUEL_QTY+15 (0x0a10 ~ 0x0a1f)
  * physical ID(s) | ?
  * value          | (int) float * 100 [ml]
+ * 
+ * \brief fuel consumption
  */
 #define FRSKY_SP_FUEL_QTY		0x0a10
 
@@ -382,12 +403,10 @@ class FrskySP {
         byte     write (byte val);
 
         // attributes
-        SoftwareSerial *mySerial;                                   //!<SoftwareSerial object
-        union packet;                                               //!<Packet union (byte[8], uint64)
-
-		uint8_t _cellMax = 0;
+        SoftwareSerial *mySerial;   //!<SoftwareSerial object
 
     private:
+		uint8_t _cellMax = 0;
 		void    _ledToggle (int state);
 		int     _pinLed = -1;										//!<LED pin (-1 = disabled)
         int     _pinRx;												//!<RX pin used by SoftwareSerial
