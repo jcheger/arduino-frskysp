@@ -60,12 +60,12 @@ void loop () {
           break;
           
         case 0xE4:  // Physical ID 5 - RPM
-          FrskySP.sendData (FRSKY_SP_RPM, 11111);                        // 11111 rpm
+          FrskySP.sendData (FRSKY_SP_RPM, 11111);  // 11111 rpm
           i[5]++;
           break;
           
         case 0x45:  // Physical ID 6 - SP2UART(Host)
-          if (i[6] % 3 == 0) FrskySP.sendData (FRSKY_SP_A2, 1.1 * 10);      // 5.7 V - set ratio to « - » to get the correct value (one decimal precision only)
+          if (i[6] % 3 == 0) FrskySP.sendData (FRSKY_SP_A2, 1.1 * 10);      // 0.6 V - set ratio to « - » to get the correct value (one decimal precision only)
           if (i[6] % 3 == 1) FrskySP.sendData (FRSKY_SP_A3, 11.11 * 100);   // 11.11 V
           if (i[6] % 3 == 2) FrskySP.sendData (FRSKY_SP_A4, 111.11 * 100);  // 111.11 V
           i[6]++;
