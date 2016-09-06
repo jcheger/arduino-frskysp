@@ -6,7 +6,7 @@ This library is in beta stage. All known sensors were tested and seem to work.
 # documentation
 Documentation was removed out of the repository. It is available on: https://www.ordinoscope.net/static/arduino-frskysp/docs/html/
 
-You can also build it this way
+You can also build it this way (must install doxygen obviously)
 
 ````sh
  cd src
