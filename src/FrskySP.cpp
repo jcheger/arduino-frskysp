@@ -126,24 +126,6 @@
 #include "SoftwareSerial.h"
 
 /**
- * Smart Port protocol uses 8 bytes packets.
- * 
- * Packet format (byte): tiivvvvc
- * - t: type (1 byte)
- * - i: sensor ID (2 bytes)
- * - v: value (4 bytes - int32)
- * - c: crc
- * 
- * The uint64 presentation is much easier to use for data shifting.
- */
-union FrskySP::packet {
-    //! byte[8] presentation
-    uint8_t byte[8];
-    //! uint64 presentation
-    uint64_t uint64;
-};
-
-/**
  * Open a SoftwareSerial connection
  * \param pinRx RX pin
  * \param pinTx TX pin
