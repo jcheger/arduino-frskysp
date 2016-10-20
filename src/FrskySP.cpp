@@ -108,7 +108,7 @@
  * \image html Smart_Port_bb.png
  * 
  * * pull down resistor on TX line (100k)
- * * diode between TX and RX (ex. 1N4108)
+ * * diode between TX and RX (ex. 1N4148)
  * 
  * On this circuit, RX will hang after serial begin. There is a workaround that inverts the TX pinMode to INPUT and back
  *  to OUTPUT.
