@@ -6,7 +6,7 @@
 #include <SoftwareSerial.h>
 #include <Streaming.h>
 
-FrskySP FrskySP (10, 11);
+FrskySP FrskySP (10);
 
 /*
  * Physical IDs + CRC

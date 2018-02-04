@@ -11,7 +11,7 @@
 #include <FrskySP.h>
 #include <SoftwareSerial.h>
 
-FrskySP FrskySP (10, 11);
+FrskySP FrskySP (10);
 
 void setup () {
   FrskySP.ledSet (13);

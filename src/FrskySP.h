@@ -387,7 +387,7 @@ class FrskySP {
     
     public:
         // methods
-        FrskySP (int pinRx, int pinTx);
+        FrskySP (int pin);
         int      available ();
         uint8_t  CRC (uint8_t *packet);
         bool     CRCcheck (uint8_t *packet);
@@ -407,8 +407,7 @@ class FrskySP {
 		uint8_t _cellMax = 0;
 		void    _ledToggle (int state);
 		int     _pinLed = -1;										//!<LED pin (-1 = disabled)
-        int     _pinRx;												//!<RX pin used by SoftwareSerial
-        int     _pinTx;												//!<TX pin used by SoftwareSerial
+		int     _pin;											      //!<Pin used for communications
     
 };
 
