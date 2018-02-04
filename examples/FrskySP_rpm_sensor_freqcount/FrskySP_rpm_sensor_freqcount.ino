@@ -34,7 +34,7 @@
 // Use DEBUG 1 to compile the serial debug support
 #define DEBUG 1
 
-FrskySP FrskySP (10, 11);
+FrskySP FrskySP (10);
 
 /*
  * This is the ratio between the sensor and the final stage.

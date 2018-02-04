@@ -32,7 +32,7 @@
 // Use DEBUG 1 to compile the serial debug support
 #define DEBUG 1
 
-FrskySP FrskySP (10, 11);
+FrskySP FrskySP (10);
 
 unsigned long rpm_count = 0;
 unsigned long rpm_micros  = micros ();

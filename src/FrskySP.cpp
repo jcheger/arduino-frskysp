@@ -103,15 +103,9 @@
  * * take care about the polling time of the sensor. For instance, polling a DS18x20 temperature sensor takes up to
  *   750ms. The polling must be asynchronous to be answered within the cycle of 11ms.
  * 
- * Connection draft
- * ================
- * \image html Smart_Port_bb.png
- * 
- * * pull down resistor on TX line (100k)
- * * diode between TX and RX (ex. 1N4148)
- * 
- * On this circuit, RX will hang after serial begin. There is a workaround that inverts the TX pinMode to INPUT and back
- *  to OUTPUT.
+ * Connections
+ * ===========
+ * Simply connect the smart port data line to any pin SoftwareSerial can be used on.
  *
  * \version devel
  * \author Jean-Christophe Heger
@@ -127,38 +121,24 @@
 
 /**
  * Open a SoftwareSerial connection
- * \param pinRx RX pin
- * \param pinTx TX pin
+ * \param pin Communications pin
  * \brief Class constructor
- * \warning after opening the ports with SoftwareSerial, and because of the mux between TX and RX, RX will hang.
- *   The workaround is to revert the TX port as INPUT, and put it back again as OUTPUT at the first available()
- *   call.
  * \todo allow the use [AltSoftSerial] (http://www.pjrc.com/teensy/td_libs_AltSoftSerial.html) instead - much faster
  *   than SerialSoftware, and no conflict with [PinChangeInt] (https://code.google.com/p/arduino-pinchangeint/) - see
  *  [bugs] (https://code.google.com/p/arduino-pinchangeint/wiki/Bugs).
  */
-FrskySP::FrskySP (int pinRx, int pinTx) {
-    this->_pinRx = pinRx;
-    this->_pinTx = pinTx;
-    this->mySerial = new SoftwareSerial (pinRx, pinTx, true);
+FrskySP::FrskySP (int pin) {
+    this->mySerial = new SoftwareSerial (pin, pin, true);
     this->mySerial->begin (57600);
-    pinMode (pinTx, INPUT); // RX freeze workaround
 }
 
 /**
  * Check if a byte is available on Smart Port
  * 
- * Reverts the TX pin to OUTPUT mode after the first available byte
  * \brief SoftwareSerial.available() passthrough
  */
 int FrskySP::available () {
-    static bool mode = 1;                   // at first call, mode is INPUT
-    int r = this->mySerial->available ();
-    if (mode && r) {                        // RX freeze workaround
-        pinMode (this->_pinTx, OUTPUT);     
-        mode = 0;                           // mode is OUPUT from now
-    }
-    return r;
+    return this->mySerial->available ();
 }
 
 /**

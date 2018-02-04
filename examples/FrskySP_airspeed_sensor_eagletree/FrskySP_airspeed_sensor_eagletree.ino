@@ -30,7 +30,7 @@
 
 #define ASP_V3 0xEA >> 1
 
-FrskySP FrskySP (10, 11);
+FrskySP FrskySP (10);
 
 void setup () {
   Serial.begin (115200);
