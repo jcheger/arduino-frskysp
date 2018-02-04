@@ -128,7 +128,6 @@
  *  [bugs] (https://code.google.com/p/arduino-pinchangeint/wiki/Bugs).
  */
 FrskySP::FrskySP (int pin) {
-    this->_pin = pin;
     this->mySerial = new SoftwareSerial (pin, pin, true);
     this->mySerial->begin (57600);
 }
