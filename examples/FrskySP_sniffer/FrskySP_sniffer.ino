@@ -45,10 +45,18 @@ void loop () {
     decode (packet.byte);
   } else if (FrskySP.available () > 8) {
     Serial << "buffer overflow (" << FrskySP.available () << ") - too many sensors on the same physical ID ?" << endl;
+    // Throw away wrong bits
+    while(FrskySP.available()) {
+      FrskySP.read();
+    }
   } else if (FrskySP.available () == 0) {
     //Serial << "no sensor" << endl;
   } else {
     Serial << "buffer underflow - sensor too slow ?" << endl;
+    // Throw away wrong bits
+    while(FrskySP.available()) {
+      FrskySP.read();
+    }
   }
 
   while (FrskySP.available ()) {
